@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Life OS</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F7F6F2;
+  --surface:#FFFFFF;
+  --surface2:#F0EFE9;
+  --border:#E4E2D8;
+  --border2:#D0CEC2;
+  --text:#1A1916;
+  --text2:#6B6960;
+  --text3:#A8A69C;
+  --accent:#2D6A4F;
+  --accent-soft:#EAF4EE;
+  --accent2:#40916C;
+  --red:#C1440E;
+  --red-soft:#FDF0EB;
+  --amber:#B45309;
+  --amber-soft:#FEF3E2;
+  --blue:#1D4ED8;
+  --blue-soft:#EFF6FF;
+  --purple:#6D28D9;
+  --purple-soft:#F5F3FF;
+  --pink:#BE185D;
+  --pink-soft:#FDF2F8;
+  --teal:#0F766E;
+  --teal-soft:#F0FDFA;
+  --r:10px;--rs:6px;
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;min-height:100vh}
+/* ── LAYOUT ── */
+.shell{display:flex;min-height:100vh}
+.sidebar{width:210px;background:var(--surface);border-right:1px solid var(--border);position:fixed;top:0;left:0;bottom:0;display:flex;flex-direction:column;z-index:200;overflow-y:auto}
+.main{margin-left:210px;flex:1;min-height:100vh}
+/* ── SIDEBAR ── */
+.sb-head{padding:22px 18px 14px;border-bottom:1px solid var(--border)}
+.sb-logo{font-family:'DM Serif Display',serif;font-size:18px;color:var(--text);line-height:1.1}
+.sb-sub{font-size:10px;color:var(--text3);margin-top:3px;letter-spacing:.04em}
+.sb-date{font-size:11px;color:var(--text3);margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
+.sb-nav{flex:1;padding:10px 10px}
+.nav-label{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);padding:10px 8px 5px}
+.nav-btn{display:flex;align-items:center;gap:9px;width:100%;padding:8px 10px;border-radius:var(--rs);border:none;background:none;color:var(--text2);font-size:13px;font-weight:500;cursor:pointer;text-align:left;transition:all .12s}
+.nav-btn:hover{background:var(--surface2);color:var(--text)}
+.nav-btn.active{background:var(--accent-soft);color:var(--accent)}
+.nav-btn .ic{font-size:15px;width:18px;text-align:center}
+.sb-streak{margin:10px;padding:12px 14px;background:var(--surface2);border-radius:var(--r);border:1px solid var(--border)}
+.streak-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.streak-num{font-family:'DM Serif Display',serif;font-size:26px;color:var(--accent);line-height:1}
+.streak-unit{font-size:11px;color:var(--text3);margin-left:3px}
+/* ── TOPBAR ── */
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.page-title{font-family:'DM Serif Display',serif;font-size:20px;color:var(--text)}
+.topbar-chips{display:flex;gap:8px;align-items:center}
+/* ── PAGE ── */
+.page{display:none;padding:24px 28px}
+.page.active{display:block}
+/* ── CHIPS / BADGES ── */
+.chip{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.chip-g{background:var(--accent-soft);color:var(--accent)}
+.chip-a{background:var(--amber-soft);color:var(--amber)}
+.chip-r{background:var(--red-soft);color:var(--red)}
+.chip-b{background:var(--blue-soft);color:var(--blue)}
+.chip-p{background:var(--purple-soft);color:var(--purple)}
+.chip-pk{background:var(--pink-soft);color:var(--pink)}
+.chip-t{background:var(--teal-soft);color:var(--teal)}
+/* ── CARDS ── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px}
+.card-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px}
+.card-sub{font-size:11px;color:var(--text3);margin-bottom:14px}
+/* ── GRIDS ── */
+.g2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+/* ── METRIC ── */
+.metric{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px}
+.metric-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.metric-val{font-family:'DM Serif Display',serif;font-size:28px;color:var(--text);line-height:1}
+.metric-unit{font-size:11px;color:var(--text3);margin-top:3px}
+/* ── SECTION HEADING ── */
+.sh{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:18px}
+.sh-title{font-family:'DM Serif Display',serif;font-size:22px;color:var(--text);line-height:1.1}
+.sh-sub{font-size:12px;color:var(--text3);margin-top:3px}
+/* ── CHECK ITEMS ── */
+.ci{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)}
+.ci:last-child{border-bottom:none}
+.cbox{width:17px;height:17px;border-radius:4px;border:1.5px solid var(--border2);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;transition:all .12s;font-size:10px;color:transparent}
+.cbox:hover{border-color:var(--accent)}
+.cbox.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.ci-title{font-size:13px;font-weight:500;color:var(--text)}
+.ci-sub{font-size:11px;color:var(--text3);margin-top:1px}
+/* ── PROGRESS BAR ── */
+.pbar{background:var(--surface2);border-radius:4px;height:5px;overflow:hidden;margin-top:7px}
+.pfill{height:100%;border-radius:4px;transition:width .4s}
+/* ── TIME BLOCKS ── */
+.tb{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--border);align-items:flex-start}
+.tb:last-child{border-bottom:none}
+.tb-time{font-size:11px;color:var(--text3);min-width:80px;padding-top:2px;font-variant-numeric:tabular-nums}
+.tb-line{width:2px;border-radius:2px;min-height:32px;align-self:stretch;flex-shrink:0}
+.tb-title{font-size:13px;font-weight:600;color:var(--text)}
+.tb-desc{font-size:11px;color:var(--text3);margin-top:1px;line-height:1.5}
+/* ── HABIT TRACKER ── */
+.ht-head{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.ht-head:last-child{border-bottom:none}
+.ht-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.ht-name{flex:1;font-size:13px;font-weight:500;color:var(--text)}
+.ht-sub{font-size:11px;color:var(--text3)}
+.ht-days{display:flex;gap:4px}
+.hday{width:26px;height:26px;border-radius:5px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:var(--text3);transition:all .12s;flex-shrink:0}
+.hday:hover{border-color:var(--accent);color:var(--accent)}
+.hday.done{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+/* ── FOCUS TIMER ── */
+.timer-face{text-align:center;padding:28px 0 18px}
+.timer-digits{font-family:'DM Serif Display',serif;font-size:68px;color:var(--text);letter-spacing:-.02em;line-height:1}
+.timer-lbl{font-size:12px;color:var(--text3);margin-top:6px}
+.timer-controls{display:flex;gap:8px;justify-content:center;margin-top:18px;flex-wrap:wrap}
+.btn{padding:8px 18px;border-radius:var(--rs);border:1px solid var(--border2);background:var(--surface);color:var(--text);font-size:12px;font-weight:500;cursor:pointer;transition:all .12s;font-family:'Inter',sans-serif}
+.btn:hover{background:var(--surface2)}
+.btn-g{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn-g:hover{background:var(--accent2);border-color:var(--accent2)}
+/* ── EDITABLE HABITS ── */
+.habit-edit-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border)}
+.habit-edit-row:last-child{border-bottom:none}
+.he-color{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.he-input{flex:1;border:none;background:transparent;font-family:'Inter',sans-serif;font-size:13px;color:var(--text);outline:none;padding:2px 4px;border-radius:4px}
+.he-input:focus{background:var(--surface2)}
+.he-del{background:none;border:none;cursor:pointer;font-size:14px;color:var(--text3);padding:2px 6px;border-radius:4px;transition:all .12s}
+.he-del:hover{background:var(--red-soft);color:var(--red)}
+/* ── MONTH CALENDAR ── */
+.mcal{width:100%}
+.mcal-head{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:4px}
+.mcal-day-lbl{text-align:center;font-size:10px;font-weight:600;color:var(--text3);padding:4px 0;text-transform:uppercase;letter-spacing:.04em}
+.mcal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.mcal-cell{aspect-ratio:1;border-radius:5px;border:1px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:var(--text2);cursor:pointer;transition:all .12s;position:relative}
+.mcal-cell:hover{border-color:var(--accent2)}
+.mcal-cell.today{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);font-weight:700}
+.mcal-cell.done{background:var(--accent);border-color:var(--accent);color:#fff}
+.mcal-cell.empty{background:transparent;border-color:transparent;cursor:default}
+/* ── RULES ── */
+.rule{display:flex;gap:14px;padding:13px 0;border-bottom:1px solid var(--border)}
+.rule:last-child{border-bottom:none}
+.rule-n{font-family:'DM Serif Display',serif;font-size:20px;color:var(--border2);min-width:26px}
+.rule-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px}
+.rule-desc{font-size:12px;color:var(--text3);line-height:1.6}
+/* ── NOTES ── */
+.nta{width:100%;border:1px solid var(--border);border-radius:var(--rs);background:var(--surface);font-family:'Inter',sans-serif;font-size:13px;color:var(--text);padding:10px 12px;resize:none;outline:none;line-height:1.7;transition:border-color .12s}
+.nta:focus{border-color:var(--accent)}
+.nta::placeholder{color:var(--text3)}
+/* ── MONTH PICKER ── */
+.mpick{display:flex;align-items:center;gap:8px}
+.mpick-btn{background:none;border:1px solid var(--border);border-radius:var(--rs);padding:5px 10px;cursor:pointer;font-size:12px;color:var(--text2);transition:all .12s}
+.mpick-btn:hover{background:var(--surface2)}
+.mpick-label{font-size:14px;font-weight:600;color:var(--text);min-width:110px;text-align:center}
+/* ── PHASE ── */
+.phase-bar{display:flex;margin-bottom:20px}
+.phase-item{flex:1;padding:11px 14px;border:1px solid var(--border);border-right:none;cursor:pointer;transition:all .12s}
+.phase-item:first-child{border-radius:var(--r) 0 0 var(--r)}
+.phase-item:last-child{border-right:1px solid var(--border);border-radius:0 var(--r) var(--r) 0}
+.phase-item:hover{background:var(--surface2)}
+.phase-item.active{background:var(--accent-soft);border-color:var(--accent)}
+.phase-item.active+.phase-item{border-left-color:var(--accent)}
+.phase-num{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
+.phase-name{font-size:13px;font-weight:600;color:var(--text)}
+.phase-date{font-size:10px;color:var(--text3);margin-top:1px}
+.phase-item.active .phase-name{color:var(--accent)}
+/* ── FOCUS SESSIONS ── */
+.sess-btn{display:flex;align-items:center;gap:10px;width:100%;padding:9px 12px;border-radius:var(--rs);border:1px solid var(--border);background:var(--surface2);cursor:pointer;transition:all .12s;font-family:'Inter',sans-serif;font-size:13px;font-weight:500;color:var(--text);text-align:left;margin-bottom:6px}
+.sess-btn:hover{border-color:var(--accent2)}
+.sess-btn.sel{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+hr.div{border:none;border-top:1px solid var(--border);margin:14px 0}
+/* ── SKILL PROGRESS ── */
+.sp-row{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border)}
+.sp-row:last-child{border-bottom:none}
+.sp-name{font-size:13px;font-weight:500;color:var(--text);min-width:150px}
+.sp-bar-wrap{flex:1;background:var(--surface2);border-radius:4px;height:6px;overflow:hidden}
+.sp-fill{height:100%;border-radius:4px;transition:width .5s}
+.sp-pct{font-size:11px;color:var(--text3);min-width:32px;text-align:right}
+/* mobile */
+@media(max-width:700px){
+  .sidebar{width:54px}
+  .sb-head,.sb-streak,.nav-label{display:none}
+  .nav-btn span:not(.ic){display:none}
+  .main{margin-left:54px}
+  .g2,.g3,.g4{grid-template-columns:1fr}
+  .page{padding:16px 14px}
+  .topbar{padding:12px 14px}
+  .phase-bar{flex-direction:column}
+  .phase-item{border-right:1px solid var(--border)!important;border-bottom:none;border-radius:0!important}
+  .phase-item:first-child{border-radius:var(--r) var(--r) 0 0!important}
+  .phase-item:last-child{border-radius:0 0 var(--r) var(--r)!important;border-bottom:1px solid var(--border)!important}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sb-head">
+    <div class="sb-logo">My Life OS</div>
+    <div class="sb-sub">BCA · Agency · IT · Health</div>
+    <div class="sb-date" id="sbDate"></div>
+  </div>
+  <nav class="sb-nav">
+    <div class="nav-label">Daily</div>
+    <button class="nav-btn active" onclick="go('dashboard',this)"><span class="ic">⚡</span><span>Dashboard</span></button>
+    <button class="nav-btn" onclick="go('schedule',this)"><span class="ic">🕐</span><span>Schedule</span></button>
+    <button class="nav-btn" onclick="go('habits',this)"><span class="ic">✅</span><span>Habits</span></button>
+    <button class="nav-btn" onclick="go('timer',this)"><span class="ic">⏱</span><span>Focus timer</span></button>
+    <div class="nav-label">Build</div>
+    <button class="nav-btn" onclick="go('roadmap',this)"><span class="ic">🗺</span><span>Roadmap</span></button>
+    <button class="nav-btn" onclick="go('skills',this)"><span class="ic">💡</span><span>Skills</span></button>
+    <div class="nav-label">Life</div>
+    <button class="nav-btn" onclick="go('balance',this)"><span class="ic">⚖️</span><span>Balance</span></button>
+    <button class="nav-btn" onclick="go('journal',this)"><span class="ic">📓</span><span>Journal</span></button>
+    <button class="nav-btn" onclick="go('rules',this)"><span class="ic">📌</span><span>Rules</span></button>
+  </nav>
+  <div class="sb-streak">
+    <div class="streak-lbl">Streak</div>
+    <div><span class="streak-num" id="streakNum">1</span><span class="streak-unit"> days</span></div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+<div class="topbar">
+  <div>
+    <div class="page-title" id="pageTitle">Dashboard</div>
+  </div>
+  <div class="topbar-chips">
+    <span class="chip chip-g">● On track</span>
+    <span class="chip chip-b">BCA + Agency</span>
+  </div>
+</div>
+
+<!-- ═══ DASHBOARD ═══ -->
+<div id="dashboard" class="page active">
+  <div class="sh">
+    <div>
+      <div class="sh-title">Good morning ☀️</div>
+      <div class="sh-sub">Your power window: 7:30 AM commute + 3 hrs of focused work</div>
+    </div>
+  </div>
+
+  <div class="g4" style="margin-bottom:16px">
+    <div class="metric"><div class="metric-lbl">Habits done</div><div class="metric-val" id="mHabits">0/10</div><div class="metric-unit">today</div></div>
+    <div class="metric"><div class="metric-lbl">Focus done</div><div class="metric-val" id="mFocus">0</div><div class="metric-unit">of 3 hrs</div></div>
+    <div class="metric"><div class="metric-lbl">Days to Dec</div><div class="metric-val" id="mDays">—</div><div class="metric-unit">keep going</div></div>
+    <div class="metric"><div class="metric-lbl">Phase</div><div class="metric-val">1/4</div><div class="metric-unit">Foundation</div></div>
+  </div>
+
+  <div class="g2" style="margin-bottom:14px">
+    <div class="card">
+      <div class="card-title">Today's top 3</div>
+      <div class="card-sub">Non-negotiable daily actions</div>
+      <div class="ci"><div class="cbox" onclick="tick(this)"></div><div><div class="ci-title">Complete 1 skill block (IT / Design / Agency)</div><div class="ci-sub">Pick one, go deep for 1 hour</div></div></div>
+      <div class="ci"><div class="cbox" onclick="tick(this)"></div><div><div class="ci-title">Gym (2 hrs) or at least 30-min walk</div><div class="ci-sub">Health is the foundation</div></div></div>
+      <div class="ci"><div class="cbox" onclick="tick(this)"></div><div><div class="ci-title">Post 1 piece of content online</div><div class="ci-sub">LinkedIn / Instagram — document the journey</div></div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">This week's focus</div>
+      <div class="card-sub">Week of Jun 9–15, 2026</div>
+      <div class="ci"><div class="cbox" onclick="tick(this)"></div><div class="ci-title">Pick agency niche (SEO / ads / social)</div></div>
+      <div class="ci"><div class="cbox" onclick="tick(this)"></div><div class="ci-title">Start graphic design basics (Canva → Figma)</div></div>
+      <div class="ci"><div class="cbox" onclick="tick(this)"></div><div class="ci-title">Set up GitHub profile</div></div>
+      <div class="ci"><div class="cbox" onclick="tick(this)"></div><div class="ci-title">Submit BCA assignments on time</div></div>
+      <div class="ci"><div class="cbox" onclick="tick(this)"></div><div class="ci-title">Post 3× on LinkedIn this week</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">6-month journey</div>
+    <div class="card-sub">Jun 12 → Dec 31, 2026 — building in public</div>
+    <div style="display:flex;gap:10px;margin-top:4px">
+      <div style="flex:1">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:11px;color:var(--text3)">Overall progress</span><span style="font-size:11px;color:var(--text2)" id="pctLabel">1%</span></div>
+        <div class="pbar"><div class="pfill" id="pbar" style="width:1%;background:var(--accent)"></div></div>
+      </div>
+    </div>
+    <div class="g4" style="margin-top:14px;gap:8px">
+      <div style="padding:10px;background:var(--accent-soft);border-radius:8px;border:1px solid var(--accent);text-align:center">
+        <div style="font-size:10px;color:var(--accent);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px">Phase 1</div>
+        <div style="font-size:12px;font-weight:600;color:var(--accent)">Foundation</div>
+        <div style="font-size:10px;color:var(--text3);margin-top:2px">Now → Jul</div>
+      </div>
+      <div style="padding:10px;background:var(--surface2);border-radius:8px;border:1px solid var(--border);text-align:center">
+        <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px">Phase 2</div>
+        <div style="font-size:12px;font-weight:600;color:var(--text2)">Portfolio</div>
+        <div style="font-size:10px;color:var(--text3);margin-top:2px">Aug–Sep</div>
+      </div>
+      <div style="padding:10px;background:var(--surface2);border-radius:8px;border:1px solid var(--border);text-align:center">
+        <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px">Phase 3</div>
+        <div style="font-size:12px;font-weight:600;color:var(--text2)">First clients</div>
+        <div style="font-size:10px;color:var(--text3);margin-top:2px">Oct–Nov</div>
+      </div>
+      <div style="padding:10px;background:var(--surface2);border-radius:8px;border:1px solid var(--border);text-align:center">
+        <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px">Phase 4</div>
+        <div style="font-size:12px;font-weight:600;color:var(--text2)">Scale</div>
+        <div style="font-size:10px;color:var(--text3);margin-top:2px">Dec</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SCHEDULE ═══ -->
+<div id="schedule" class="page">
+  <div class="sh"><div><div class="sh-title">Daily schedule</div><div class="sh-sub">Every hour mapped — nothing left to guesswork</div></div></div>
+  <div class="g2">
+    <div class="card">
+      <div class="card-title">🌅 Morning</div>
+      <div class="card-sub">Before college — the quiet power hour</div>
+      <div class="tb"><div class="tb-time">5:00 – 5:20</div><div class="tb-line" style="background:var(--accent)"></div><div><div class="tb-title">Wake up ritual</div><div class="tb-desc">No phone. Water, stretch, set 1 intention.</div></div></div>
+      <div class="tb"><div class="tb-time">5:20 – 6:20</div><div class="tb-line" style="background:var(--blue)"></div><div><div class="tb-title">Skill block #1</div><div class="tb-desc">IT (web dev / AI) or graphic design — 1 hr focused study or build.</div></div></div>
+      <div class="tb"><div class="tb-time">6:20 – 7:20</div><div class="tb-line" style="background:var(--red)"></div><div><div class="tb-title">Gym (2 hrs total)</div><div class="tb-desc">Start gym here. Finish after college or split as needed.</div></div></div>
+      <div class="tb"><div class="tb-time">7:20 – 7:30</div><div class="tb-line" style="background:var(--text3)"></div><div><div class="tb-title">Get ready for college</div><div class="tb-desc">Quick prep, pack bag, leave.</div></div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">🎧 Commute + College</div>
+      <div class="card-sub">7:30 AM – whenever college ends</div>
+      <div class="tb"><div class="tb-time">7:30 – 9:00</div><div class="tb-line" style="background:var(--pink)"></div><div><div class="tb-title">🎵 Music time (commute)</div><div class="tb-desc">Your decompression window. Enjoy it fully — no guilt.</div></div></div>
+      <div class="tb"><div class="tb-time">9:00 – 1:00</div><div class="tb-line" style="background:var(--purple)"></div><div><div class="tb-title">BCA college classes</div><div class="tb-desc">Attend fully, take notes, engage. Degree matters.</div></div></div>
+      <div class="tb"><div class="tb-time">During breaks</div><div class="tb-line" style="background:var(--amber)"></div><div><div class="tb-title">College project work</div><div class="tb-desc">Use free periods and lunch breaks for assignments.</div></div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">☀️ Afternoon</div>
+      <div class="card-sub">After college — the productive second block</div>
+      <div class="tb"><div class="tb-time">1:00 – 2:00</div><div class="tb-line" style="background:var(--text3)"></div><div><div class="tb-title">Lunch + household chores</div><div class="tb-desc">Eat well, handle home responsibilities.</div></div></div>
+      <div class="tb"><div class="tb-time">2:00 – 3:00</div><div class="tb-line" style="background:var(--teal)"></div><div><div class="tb-title">Skill block #2 — Agency / Content</div><div class="tb-desc">Marketing agency work, content creation, or client outreach.</div></div></div>
+      <div class="tb"><div class="tb-time">3:00 – 4:00</div><div class="tb-line" style="background:var(--accent)"></div><div><div class="tb-title">Skill block #3 — Design / Project</div><div class="tb-desc">Graphic design practice or BCA project deep work.</div></div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">🌙 Evening</div>
+      <div class="card-sub">Family, rest, and wind-down</div>
+      <div class="tb"><div class="tb-time">4:00 – 6:00</div><div class="tb-line" style="background:var(--pink)"></div><div><div class="tb-title">Family + friends time</div><div class="tb-desc">Fully present. No work guilt. This recharges everything.</div></div></div>
+      <div class="tb"><div class="tb-time">6:00 – 7:00</div><div class="tb-line" style="background:var(--red)"></div><div><div class="tb-title">Gym (second half, if split)</div><div class="tb-desc">Complete the 2-hr gym goal if not done in morning.</div></div></div>
+      <div class="tb"><div class="tb-time">7:00 – 8:00</div><div class="tb-line" style="background:var(--amber)"></div><div><div class="tb-title">Free time / hobby</div><div class="tb-desc">Watch, read, game, relax. No agenda.</div></div></div>
+      <div class="tb"><div class="tb-time">8:00 – 9:00</div><div class="tb-line" style="background:var(--blue)"></div><div><div class="tb-title">Post content + light review</div><div class="tb-desc">Post 1 thing on social. Scroll intentionally, not mindlessly.</div></div></div>
+      <div class="tb"><div class="tb-time">9:30 PM</div><div class="tb-line" style="background:var(--accent)"></div><div><div class="tb-title">Wind down + journal</div><div class="tb-desc">No screens. Write 3 wins. Sleep by 10:30 PM.</div></div></div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:14px">
+    <div class="card-title">Weekly rhythm</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+      <span class="chip chip-g">Mon–Fri: full structure</span>
+      <span class="chip chip-a">Saturday: skill sprint 2–3 hrs extra</span>
+      <span class="chip chip-b">Sunday: rest + 30-min weekly review</span>
+      <span class="chip chip-pk">Commute: music always</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ HABITS ═══ -->
+<div id="habits" class="page">
+  <div class="sh">
+    <div>
+      <div class="sh-title">Habit tracker</div>
+      <div class="sh-sub">Check every day — edit habits anytime</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <div class="mpick">
+        <button class="mpick-btn" onclick="changeMonth(-1)">‹</button>
+        <div class="mpick-label" id="monthLabel">June 2026</div>
+        <button class="mpick-btn" onclick="changeMonth(1)">›</button>
+      </div>
+      <span class="chip chip-g" id="habitChip">0/10 today</span>
+    </div>
+  </div>
+
+  <!-- Month calendar -->
+  <div class="card" style="margin-bottom:14px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <div class="card-title" id="calMonthTitle">June 2026 — daily check</div>
+      <span style="font-size:11px;color:var(--text3)">Green = all habits done</span>
+    </div>
+    <div class="mcal-head">
+      <div class="mcal-day-lbl">S</div><div class="mcal-day-lbl">M</div><div class="mcal-day-lbl">T</div>
+      <div class="mcal-day-lbl">W</div><div class="mcal-day-lbl">T</div><div class="mcal-day-lbl">F</div><div class="mcal-day-lbl">S</div>
+    </div>
+    <div class="mcal-grid" id="calGrid"></div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div>
+          <div class="card-title">Career habits</div>
+          <div style="font-size:11px;color:var(--text3)">Build every day</div>
+        </div>
+        <button class="btn" onclick="addHabit('career')" style="font-size:11px;padding:5px 10px">+ Add</button>
+      </div>
+      <div id="careerHabitList"></div>
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div>
+          <div class="card-title">Life habits</div>
+          <div style="font-size:11px;color:var(--text3)">Health, peace, and joy</div>
+        </div>
+        <button class="btn" onclick="addHabit('life')" style="font-size:11px;padding:5px 10px">+ Add</button>
+      </div>
+      <div id="lifeHabitList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ FOCUS TIMER ═══ -->
+<div id="timer" class="page">
+  <div class="sh"><div><div class="sh-title">Focus timer</div><div class="sh-sub">3 hours a day, used well, changes everything</div></div></div>
+  <div class="g2">
+    <div class="card" style="text-align:center">
+      <div class="timer-face">
+        <div class="timer-digits" id="timerDisp">25:00</div>
+        <div class="timer-lbl" id="timerLbl">Pomodoro · 25 min</div>
+      </div>
+      <div class="pbar" style="margin-bottom:18px"><div class="pfill" id="timerBar" style="width:0%;background:var(--accent)"></div></div>
+      <div class="timer-controls">
+        <button class="btn" onclick="setT(25,'Pomodoro · 25 min')">25</button>
+        <button class="btn" onclick="setT(50,'Deep work · 50 min')">50</button>
+        <button class="btn" onclick="setT(60,'Power hour · 60 min')">60</button>
+        <button class="btn btn-g" id="tBtn" onclick="toggleT()">Start</button>
+        <button class="btn" onclick="resetT()">Reset</button>
+      </div>
+      <div style="margin-top:16px;font-size:12px;color:var(--text3)">Sessions today: <b style="color:var(--accent)" id="sessN">0</b> &nbsp;·&nbsp; Time focused: <b style="color:var(--accent)" id="focusMin">0 min</b></div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="margin-bottom:10px">What are you working on?</div>
+      <button class="sess-btn" onclick="selSess(this,'IT — web dev / AI')"><span>💻</span>IT — web dev / AI</button>
+      <button class="sess-btn" onclick="selSess(this,'Graphic design')"><span>🎨</span>Graphic design</button>
+      <button class="sess-btn" onclick="selSess(this,'Marketing agency work')"><span>📈</span>Marketing agency work</button>
+      <button class="sess-btn" onclick="selSess(this,'Content creation')"><span>✍️</span>Content creation</button>
+      <button class="sess-btn" onclick="selSess(this,'BCA degree study')"><span>📚</span>BCA degree study</button>
+      <button class="sess-btn" onclick="selSess(this,'College project work')"><span>🗂</span>College project work</button>
+      <button class="sess-btn" onclick="selSess(this,'Client outreach')"><span>📬</span>Client outreach</button>
+      <hr class="div">
+      <div style="font-size:11px;color:var(--text3);margin-bottom:4px">Now working on</div>
+      <div style="font-size:14px;font-weight:600;color:var(--text)" id="sessLabel">Not selected</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ROADMAP ═══ -->
+<div id="roadmap" class="page">
+  <div class="sh"><div><div class="sh-title">6-month roadmap</div><div class="sh-sub">Student → IT pro + agency founder by Dec 2026</div></div></div>
+  <div class="phase-bar">
+    <div class="phase-item active" onclick="showPhase(1,this)"><div class="phase-num">Phase 1</div><div class="phase-name">Foundation</div><div class="phase-date">Jun–Jul 2026</div></div>
+    <div class="phase-item" onclick="showPhase(2,this)"><div class="phase-num">Phase 2</div><div class="phase-name">Portfolio</div><div class="phase-date">Aug–Sep 2026</div></div>
+    <div class="phase-item" onclick="showPhase(3,this)"><div class="phase-num">Phase 3</div><div class="phase-name">First clients</div><div class="phase-date">Oct–Nov 2026</div></div>
+    <div class="phase-item" onclick="showPhase(4,this)"><div class="phase-num">Phase 4</div><div class="phase-name">Scale</div><div class="phase-date">Dec 2026</div></div>
+  </div>
+  <div class="g2" id="phaseCards"></div>
+</div>
+
+<!-- ═══ SKILLS ═══ -->
+<div id="skills" class="page">
+  <div class="sh"><div><div class="sh-title">Skill plan</div><div class="sh-sub">What to learn, in what order, for free</div></div></div>
+  <div class="g2" style="margin-bottom:14px">
+    <div class="card">
+      <div class="card-title">💻 IT — web dev + AI</div>
+      <div class="card-sub">Core technical foundation</div>
+      <div class="sp-row"><div class="sp-name">HTML + CSS</div><div class="sp-bar-wrap"><div class="sp-fill" style="width:5%;background:var(--blue)"></div></div><div class="sp-pct">5%</div></div>
+      <div class="sp-row"><div class="sp-name">JavaScript</div><div class="sp-bar-wrap"><div class="sp-fill" style="width:3%;background:var(--blue)"></div></div><div class="sp-pct">3%</div></div>
+      <div class="sp-row"><div class="sp-name">React / Next.js</div><div class="sp-bar-wrap"><div class="sp-fill" style="width:0%;background:var(--blue)"></div></div><div class="sp-pct">0%</div></div>
+      <div class="sp-row"><div class="sp-name">Python basics</div><div class="sp-bar-wrap"><div class="sp-fill" style="width:0%;background:var(--blue)"></div></div><div class="sp-pct">0%</div></div>
+      <div class="sp-row"><div class="sp-name">AI / APIs (Claude, GPT)</div><div class="sp-bar-wrap"><div class="sp-fill" style="width:2%;background:var(--purple)"></div></div><div class="sp-pct">2%</div></div>
+      <div class="sp-row"><div class="sp-name">Git + GitHub</div><div class="sp-bar-wrap"><div class="sp-fill" style="width:0%;background:var(--teal)"></div></div><div class="sp-pct">0%</div></div>
+      <hr class="div">
+      <div style="font-size:11px;color:var(--text3)">Free resources: freeCodeCamp · The Odin Project · CS50 · MDN docs</div>
+    </div>
+    <div class="card">
+      <div class="card-title">🎨 Graphic design</div>
+      <div class="card-sub">Visual skills for agency + content</div>
+      <div class="sp-row"><div class="sp-name">Canva basics</div><div class="sp-bar-wrap"><div class="sp-fill" style="width:10%;background:var(--pink)"></div></div><div class="sp-pct">10%</div></div>
+      <div class="sp-row"><div class="sp-name">Design principles</div><div class="sp-bar-wrap"><div class="sp-fill" style="width:3%;background:var(--pink)"></div></div><div class="sp-pct">3%</div></div>
+      <div class="sp-row"><div class="sp-name">Figma UI design</div><div class="sp-bar-wrap"><div class="sp-fill" style="width:0%;background:var(--pink)"></div></div><div class="sp-pct">0%</div></div>
+      <div class="sp-row"><div class="sp-name">Brand identity design</div><div class="sp-bar-wrap"><div class="sp-fill" style="width:0%;background:var(--pink)"></div></div><div class="sp-pct">0%</div></div>
+      <div class="sp-row"><div class="sp-name">Social media graphics</div><div class="sp-bar-wrap"><div class="sp-fill" style="width:5%;background:var(--amber)"></div></div><div class="sp-pct">5%</div></div>
+      <hr class="div">
+      <div style="font-size:11px;color:var(--text3)">Free: Canva Design School · Figma free tier · Piximperfect (YouTube)</div>
+    </div>
+    <div class="card">
+      <div class="card-title">📈 Marketing agency</div>
+      <div class="card-sub">Skills that pay clients</div>
+      <div class="sp-row"><div class="sp-name">Copywriting / hooks</div><div class="sp-bar-wrap"><div class="sp-fill" style="width:4%;background:var(--accent)"></div></div><div class="sp-pct">4%</div></div>
+      <div class="sp-row"><div class="sp-name">Meta Ads</div><div class="sp-bar-wrap"><div class="sp-fill" style="width:0%;background:var(--accent)"></div></div><div class="sp-pct">0%</div></div>
+      <div class="sp-row"><div class="sp-name">SEO basics</div><div class="sp-bar-wrap"><div class="sp-fill" style="width:0%;background:var(--accent)"></div></div><div class="sp-pct">0%</div></div>
+      <div class="sp-row"><div class="sp-name">Social media strategy</div><div class="sp-bar-wrap"><div class="sp-fill" style="width:5%;background:var(--accent)"></div></div><div class="sp-pct">5%</div></div>
+      <div class="sp-row"><div class="sp-name">Client communication</div><div class="sp-bar-wrap"><div class="sp-fill" style="width:2%;background:var(--teal)"></div></div><div class="sp-pct">2%</div></div>
+      <hr class="div">
+      <div style="font-size:11px;color:var(--text3)">Free: HubSpot Academy · Meta Blueprint · Google Digital Garage</div>
+    </div>
+    <div class="card">
+      <div class="card-title">✍️ Content creation</div>
+      <div class="card-sub">Build audience, build trust</div>
+      <div class="sp-row"><div class="sp-name">Short-form video editing</div><div class="sp-bar-wrap"><div class="sp-fill" style="width:5%;background:var(--red)"></div></div><div class="sp-pct">5%</div></div>
+      <div class="sp-row"><div class="sp-name">LinkedIn writing</div><div class="sp-bar-wrap"><div class="sp-fill" style="width:3%;background:var(--blue)"></div></div><div class="sp-pct">3%</div></div>
+      <div class="sp-row"><div class="sp-name">Instagram growth</div><div class="sp-bar-wrap"><div class="sp-fill" style="width:4%;background:var(--pink)"></div></div><div class="sp-pct">4%</div></div>
+      <div class="sp-row"><div class="sp-name">Storytelling</div><div class="sp-bar-wrap"><div class="sp-fill" style="width:2%;background:var(--amber)"></div></div><div class="sp-pct">2%</div></div>
+      <hr class="div">
+      <div style="font-size:11px;color:var(--text3)">Free: CapCut · Creator economy YouTube channels</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">All free learning resources</div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">
+      <span class="chip chip-b">freeCodeCamp</span><span class="chip chip-g">The Odin Project</span><span class="chip chip-p">CS50 Harvard</span>
+      <span class="chip chip-a">Google Digital Garage</span><span class="chip chip-r">Meta Blueprint</span><span class="chip chip-t">HubSpot Academy</span>
+      <span class="chip chip-pk">Canva Design School</span><span class="chip chip-b">Coursera (audit)</span><span class="chip chip-g">YouTube</span>
+      <span class="chip chip-a">Figma free tier</span><span class="chip chip-p">Ahrefs Academy</span><span class="chip chip-t">AWS Free Tier</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ BALANCE ═══ -->
+<div id="balance" class="page">
+  <div class="sh"><div><div class="sh-title">Life balance</div><div class="sh-sub">All pillars matter — neglect one and the others suffer</div></div></div>
+  <div class="g2">
+    <div class="card">
+      <div class="card-title" style="color:var(--red)">💪 Gym + health</div>
+      <div class="card-sub">2 hours daily — your most important habit</div>
+      <div class="ci"><div class="cbox" onclick="tick(this)"></div><div><div class="ci-title">2 hrs gym daily (can split AM + PM)</div><div class="ci-sub">Morning: 6:20–7:20 / Evening: 6:00–7:00</div></div></div>
+      <div class="ci"><div class="cbox" onclick="tick(this)"></div><div class="ci-title">Eat real food — no skipping meals</div></div>
+      <div class="ci"><div class="cbox" onclick="tick(this)"></div><div class="ci-title">2L water every day</div></div>
+      <div class="ci"><div class="cbox" onclick="tick(this)"></div><div class="ci-title">Sleep 7–8 hrs (in bed by 10:30 PM)</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="color:var(--purple)">📚 BCA degree + college</div>
+      <div class="card-sub">Foundation credential — don't neglect it</div>
+      <div class="ci"><div class="cbox" onclick="tick(this)"></div><div class="ci-title">Attend all classes — no skipping</div></div>
+      <div class="ci"><div class="cbox" onclick="tick(this)"></div><div class="ci-title">Submit assignments on time</div></div>
+      <div class="ci"><div class="cbox" onclick="tick(this)"></div><div class="ci-title">Work on college project in free periods</div></div>
+      <div class="ci"><div class="cbox" onclick="tick(this)"></div><div class="ci-title">Review notes same day — don't backlog</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="color:var(--pink)">👨‍👩‍👧 Family + friends</div>
+      <div class="card-sub">People come before productivity</div>
+      <div class="ci"><div class="cbox" onclick="tick(this)"></div><div class="ci-title">4:00–6:00 PM fully for family — no phone work</div></div>
+      <div class="ci"><div class="cbox" onclick="tick(this)"></div><div class="ci-title">Help with household tasks daily</div></div>
+      <div class="ci"><div class="cbox" onclick="tick(this)"></div><div class="ci-title">1 proper outing with friends per week</div></div>
+      <div class="ci"><div class="cbox" onclick="tick(this)"></div><div class="ci-title">Be present — not on phone — when with people</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="color:var(--amber)">🎵 Rest + joy</div>
+      <div class="card-sub">Recharge is not optional</div>
+      <div class="ci"><div class="cbox" onclick="tick(this)"></div><div class="ci-title">Music on commute — protected, always</div></div>
+      <div class="ci"><div class="cbox" onclick="tick(this)"></div><div class="ci-title">Free time 7–8 PM daily — no agenda</div></div>
+      <div class="ci"><div class="cbox" onclick="tick(this)"></div><div class="ci-title">Sunday = full rest day (zero guilt)</div></div>
+      <div class="ci"><div class="cbox" onclick="tick(this)"></div><div class="ci-title">Keep one hobby unrelated to work</div></div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:14px">
+    <div style="font-size:13px;color:var(--text2);line-height:1.8">
+      <b style="color:var(--text)">The 3-hour rule:</b> You have 3 hours per day for building. That's 90+ hours per month — more than enough to become great at anything. The key is that those 3 hours are protected, focused, and consistent. Everything else — gym, family, music, rest — is also part of the system, not a distraction from it.
+    </div>
+  </div>
+</div>
+
+<!-- ═══ JOURNAL ═══ -->
+<div id="journal" class="page">
+  <div class="sh"><div><div class="sh-title">Daily journal</div><div class="sh-sub">5 minutes before sleep — do this every single night</div></div></div>
+  <div class="g2">
+    <div class="card">
+      <div class="card-title">3 wins today</div>
+      <div class="card-sub">No win is too small</div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">
+        <div style="display:flex;align-items:flex-start;gap:10px">
+          <div style="width:22px;height:22px;border-radius:50%;background:var(--accent-soft);border:1px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--accent);flex-shrink:0;margin-top:4px;font-weight:700">1</div>
+          <textarea class="nta" rows="2" placeholder="Something that went well today..."></textarea>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px">
+          <div style="width:22px;height:22px;border-radius:50%;background:var(--accent-soft);border:1px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--accent);flex-shrink:0;margin-top:4px;font-weight:700">2</div>
+          <textarea class="nta" rows="2" placeholder="Another win, however small..."></textarea>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px">
+          <div style="width:22px;height:22px;border-radius:50%;background:var(--accent-soft);border:1px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--accent);flex-shrink:0;margin-top:4px;font-weight:700">3</div>
+          <textarea class="nta" rows="2" placeholder="Third win..."></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Reflect + plan</div>
+      <div class="card-sub">One lesson, one intention</div>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-top:4px">
+        <div>
+          <div style="font-size:11px;color:var(--text3);margin-bottom:5px">What did I learn today?</div>
+          <textarea class="nta" rows="3" placeholder="A skill, insight, or realization..."></textarea>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--text3);margin-bottom:5px">My #1 intention for tomorrow</div>
+          <textarea class="nta" rows="2" placeholder="One thing that will make tomorrow great..."></textarea>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--text3);margin-bottom:6px">Energy level (1–10): <b id="eVal" style="color:var(--accent)">7</b></div>
+          <input type="range" min="1" max="10" value="7" style="width:100%" oninput="document.getElementById('eVal').textContent=this.value">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:14px">
+    <div class="card-title">Sunday weekly review</div>
+    <div class="card-sub">30 minutes every Sunday — look back, adjust, level up</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px">
+      <div><div style="font-size:11px;color:var(--text3);margin-bottom:5px">What worked this week?</div><textarea class="nta" rows="3" placeholder="Wins, habits, and actions that paid off..."></textarea></div>
+      <div><div style="font-size:11px;color:var(--text3);margin-bottom:5px">What do I need to change?</div><textarea class="nta" rows="3" placeholder="Honest self-assessment..."></textarea></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ RULES ═══ -->
+<div id="rules" class="page">
+  <div class="sh"><div><div class="sh-title">System rules</div><div class="sh-sub">Read these when motivation disappears — especially then</div></div></div>
+  <div class="card">
+    <div class="rule"><div class="rule-n">1</div><div><div class="rule-title">Show up every day, even for 20 minutes.</div><div class="rule-desc">Consistency beats intensity. The system survives missed days, not missed weeks. Never miss twice in a row.</div></div></div>
+    <div class="rule"><div class="rule-n">2</div><div><div class="rule-title">The 3 hours are sacred — protect them.</div><div class="rule-desc">Morning skill block + afternoon work block. Guard these from social media, chores, and distractions. Everything else happens around them.</div></div></div>
+    <div class="rule"><div class="rule-n">3</div><div><div class="rule-title">Gym is not optional. It is infrastructure.</div><div class="rule-desc">2 hours of training daily isn't extra — it is the foundation that makes everything else possible. Never skip it for "work".</div></div></div>
+    <div class="rule"><div class="rule-n">4</div><div><div class="rule-title">BCA comes first during college hours.</div><div class="rule-desc">Attend every class. Submit every project. Use free periods wisely. The degree is a credential — don't let your business dreams hurt it.</div></div></div>
+    <div class="rule"><div class="rule-n">5</div><div><div class="rule-title">Pick one agency niche and go deep.</div><div class="rule-desc">SEO, paid ads, social media, or web design — pick one by end of July. Generalists earn less. Specialists get paid.</div></div></div>
+    <div class="rule"><div class="rule-n">6</div><div><div class="rule-title">Done beats perfect. Ship it.</div><div class="rule-desc">Post the design. Push the code. Send the DM. Imperfect work that exists beats perfect work that doesn't.</div></div></div>
+    <div class="rule"><div class="rule-n">7</div><div><div class="rule-title">Music on commute is protected time.</div><div class="rule-desc">7:30–9:00 AM is your decompression. No podcasts about productivity. No guilt. Just music and presence.</div></div></div>
+    <div class="rule"><div class="rule-n">8</div><div><div class="rule-title">Family and friends are not distractions.</div><div class="rule-desc">4–6 PM belongs to people. Be present. Relationships you build now will matter more at 30 than any skill you learned at 19.</div></div></div>
+    <div class="rule"><div class="rule-n">9</div><div><div class="rule-title">Review every Sunday. Adjust. Never abandon.</div><div class="rule-desc">The system is designed to evolve. When something isn't working, fix that thing — don't throw out the whole system.</div></div></div>
+    <div class="rule"><div class="rule-n">10</div><div><div class="rule-title">Your body is the machine. Sleep is maintenance.</div><div class="rule-desc">10:30 PM lights out. 7–8 hours of sleep is not a luxury — it is the prerequisite for everything on this page.</div></div></div>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+// ── DATE ──
+const TODAY = new Date(2026, 5, 12); // Jun 12 2026
+const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+document.getElementById('sbDate').textContent = 'Fri, Jun 12 2026';
+
+// Days to Dec 31
+const dec31 = new Date(2026,11,31);
+document.getElementById('mDays').textContent = Math.ceil((dec31-TODAY)/(864e5));
+
+// Progress
+const start = new Date(2026,5,12), end = new Date(2026,11,31);
+const pct = Math.max(1,Math.round(((TODAY-start)/(end-start))*100));
+document.getElementById('pctLabel').textContent = pct+'%';
+document.getElementById('pbar').style.width = pct+'%';
+
+// ── NAV ──
+const pageTitles = {dashboard:'Dashboard',schedule:'Daily schedule',habits:'Habit tracker',timer:'Focus timer',roadmap:'6-month roadmap',skills:'Skill plan',balance:'Life balance',journal:'Daily journal',rules:'System rules'};
+function go(id, el) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  el.classList.add('active');
+  document.getElementById('pageTitle').textContent = pageTitles[id]||id;
+}
+
+// ── CHECK BOXES ──
+function tick(el) {
+  el.classList.toggle('on');
+  el.textContent = el.classList.contains('on') ? '✓' : '';
+}
+
+// ── HABITS ──
+let careerHabits = [
+  {id:'c1',name:'Study IT / web dev (30 min)',color:'#1D4ED8'},
+  {id:'c2',name:'Graphic design practice',color:'#BE185D'},
+  {id:'c3',name:'Agency work or portfolio',color:'#2D6A4F'},
+  {id:'c4',name:'Post content online',color:'#B45309'},
+  {id:'c5',name:'Engage 5 creators / DM clients',color:'#0F766E'},
+];
+let lifeHabits = [
+  {id:'l1',name:'Gym 2 hrs',color:'#C1440E'},
+  {id:'l2',name:'Sleep 7–8 hrs',color:'#6D28D9'},
+  {id:'l3',name:'Eat well + 2L water',color:'#2D6A4F'},
+  {id:'l4',name:'Family time 4–6 PM',color:'#BE185D'},
+  {id:'l5',name:'Phone-free morning (30 min)',color:'#0F766E'},
+];
+
+// habit check state: {habitId: {dayNum: bool}}
+let habitState = {};
+
+function renderHabits(container, habits, type) {
+  const el = document.getElementById(container);
+  el.innerHTML = '';
+  habits.forEach(h => {
+    if (!habitState[h.id]) habitState[h.id] = {};
+    const row = document.createElement('div');
+    row.className = 'habit-edit-row';
+    const daysInMonth = getDaysInMonth(curYear, curMonth);
+    const startDay = new Date(curYear, curMonth, 1).getDay();
+    // Only show current week days in tracker for simplicity: show 7 days
+    const days = [];
+    for (let d=6;d<=12;d++) { // Jun 6–12
+      const dayNum = d;
+      const done = habitState[h.id][dayNum]||false;
+      days.push(`<div class="hday${done?' done':''}" data-hid="${h.id}" data-day="${dayNum}" onclick="toggleHabit('${h.id}',${dayNum},this)">${d}</div>`);
+    }
+    row.innerHTML = `
+      <div class="he-color" style="background:${h.color}"></div>
+      <input class="he-input" value="${h.name}" onchange="renameHabit('${h.id}','${type}',this.value)">
+      <div style="display:flex;gap:3px">${days.join('')}</div>
+      <button class="he-del" onclick="deleteHabit('${h.id}','${type}')">×</button>
+    `;
+    el.appendChild(row);
+  });
+  updateHabitScore();
+}
+
+function toggleHabit(hid, day, el) {
+  if (!habitState[hid]) habitState[hid]={};
+  habitState[hid][day] = !habitState[hid][day];
+  el.classList.toggle('done', habitState[hid][day]);
+  if (day===12) updateHabitScore();
+  buildCal();
+}
+
+function updateHabitScore() {
+  const allH = [...careerHabits,...lifeHabits];
+  const total = allH.length;
+  const done = allH.filter(h=>habitState[h.id]&&habitState[h.id][12]).length;
+  document.getElementById('habitChip').textContent = done+'/'+total+' today';
+  document.getElementById('mHabits').textContent = done+'/'+total;
+}
+
+function renameHabit(id, type, val) {
+  const arr = type==='career'?careerHabits:lifeHabits;
+  const h = arr.find(x=>x.id===id);
+  if (h) h.name = val;
+}
+
+function deleteHabit(id, type) {
+  if (type==='career') careerHabits = careerHabits.filter(h=>h.id!==id);
+  else lifeHabits = lifeHabits.filter(h=>h.id!==id);
+  renderHabits('careerHabitList', careerHabits, 'career');
+  renderHabits('lifeHabitList', lifeHabits, 'life');
+}
+
+function addHabit(type) {
+  const id = type[0]+Date.now();
+  const colors = ['#2D6A4F','#1D4ED8','#BE185D','#B45309','#6D28D9','#0F766E','#C1440E'];
+  const color = colors[Math.floor(Math.random()*colors.length)];
+  if (type==='career') careerHabits.push({id, name:'New habit', color});
+  else lifeHabits.push({id, name:'New habit', color});
+  renderHabits('careerHabitList', careerHabits, 'career');
+  renderHabits('lifeHabitList', lifeHabits, 'life');
+}
+
+// ── CALENDAR ──
+let curMonth = 5, curYear = 2026; // June = 5
+
+function getDaysInMonth(y,m){return new Date(y,m+1,0).getDate();}
+
+function buildCal() {
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = '';
+  document.getElementById('monthLabel').textContent = monthNames[curMonth]+' '+curYear;
+  document.getElementById('calMonthTitle').textContent = monthNames[curMonth]+' '+curYear+' — daily check';
+  const firstDay = new Date(curYear,curMonth,1).getDay();
+  const days = getDaysInMonth(curYear,curMonth);
+  // empty cells
+  for (let i=0;i<firstDay;i++){
+    const e=document.createElement('div'); e.className='mcal-cell empty'; grid.appendChild(e);
+  }
+  for (let d=1;d<=days;d++){
+    const cell=document.createElement('div');
+    cell.className='mcal-cell';
+    if (curYear===2026&&curMonth===5&&d===12) cell.classList.add('today');
+    // check if all habits done this day
+    const allH=[...careerHabits,...lifeHabits];
+    const allDone=allH.length>0&&allH.every(h=>habitState[h.id]&&habitState[h.id][d]);
+    if (allDone) cell.classList.add('done');
+    cell.textContent=d;
+    cell.onclick=(()=>{
+      const day=d;
+      return ()=>{
+        // toggle all habits for this day
+        const allH2=[...careerHabits,...lifeHabits];
+        const allDone2=allH2.every(h=>habitState[h.id]&&habitState[h.id][day]);
+        allH2.forEach(h=>{
+          if(!habitState[h.id]) habitState[h.id]={};
+          habitState[h.id][day]=!allDone2;
+        });
+        renderHabits('careerHabitList',careerHabits,'career');
+        renderHabits('lifeHabitList',lifeHabits,'life');
+        buildCal();
+      };
+    })();
+    grid.appendChild(cell);
+  }
+}
+
+function changeMonth(dir){
+  curMonth+=dir;
+  if(curMonth>11){curMonth=0;curYear++;}
+  if(curMonth<0){curMonth=11;curYear--;}
+  buildCal();
+}
+
+// init
+renderHabits('careerHabitList',careerHabits,'career');
+renderHabits('lifeHabitList',lifeHabits,'life');
+buildCal();
+
+// ── TIMER ──
+let tDur=25*60,tRem=25*60,tRunning=false,tInt=null,tSess=0,tFocused=0;
+
+function setT(m,lbl){
+  resetT();
+  tDur=m*60;tRem=tDur;
+  document.getElementById('timerLbl').textContent=lbl;
+  updT();
+}
+function updT(){
+  const m=Math.floor(tRem/60),s=tRem%60;
+  document.getElementById('timerDisp').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  document.getElementById('timerBar').style.width=(((tDur-tRem)/tDur)*100)+'%';
+}
+function toggleT(){
+  if(tRunning){
+    clearInterval(tInt);tRunning=false;
+    document.getElementById('tBtn').textContent='Resume';
+  } else {
+    tRunning=true;document.getElementById('tBtn').textContent='Pause';
+    tInt=setInterval(()=>{
+      tRem--;tFocused++;
+      document.getElementById('focusMin').textContent=Math.floor(tFocused/60)+' min';
+      document.getElementById('mFocus').textContent=Math.floor(tFocused/60)+' min';
+      if(tRem<=0){
+        clearInterval(tInt);tRunning=false;tSess++;
+        document.getElementById('sessN').textContent=tSess;
+        document.getElementById('tBtn').textContent='Start';
+        tRem=tDur;
+      }
+      updT();
+    },1000);
+  }
+}
+function resetT(){
+  clearInterval(tInt);tRunning=false;tRem=tDur;
+  document.getElementById('tBtn').textContent='Start';updT();
+}
+function selSess(el,name){
+  document.querySelectorAll('.sess-btn').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel');
+  document.getElementById('sessLabel').textContent=name;
+}
+updT();
+
+// ── ROADMAP ──
+const phaseData = {
+  1:{
+    it:['Choose IT focus: web dev or AI','Start freeCodeCamp HTML/CSS/JS','Build first project: personal website','Create GitHub profile + push code'],
+    itS:['Web dev path recommended for agency synergy','30 min daily = done in 8 weeks','Real output = real proof of skill','Publicly visible work from day one'],
+    ag:['Choose agency niche by end of July','Set up LinkedIn + Instagram professionally','Study niche: follow 20 pros daily','Post 3× per week — document everything'],
+    agS:['SEO / ads / social media / web design','First impression for future clients','Consume before you create','Quantity builds the skill of consistency'],
+    des:['Complete Canva basics (1 week)','Learn design principles (typography, color, layout)','Create 5 social media post designs','Study brand identity basics'],
+    desS:['Canva Design School is free','Piximperfect on YouTube is excellent','Real output builds real portfolio','Nike, Apple, Adidas — study what works']
+  },
+  2:{
+    it:['Build 3 real projects (not tutorials)','Deploy on GitHub Pages or Vercel','Get one free cert (Google IT / freeCodeCamp)','Start learning React or Python'],
+    itS:['Portfolio > certificates initially','Free hosting, real URL, real proof','Adds credibility for clients and jobs','Choose based on agency direction'],
+    ag:['Do 2 free projects for real clients','Build agency portfolio site','Grow to 300 followers on main platform','Define exact offer + pricing'],
+    agS:['Real results = case studies = clients','Simple Notion or Carrd page works','Consistency over virality always wins','Know what you sell and what it costs'],
+    des:['Complete Figma basics','Design 10 brand identity concepts','Create complete design portfolio','Learn UI/UX fundamentals'],
+    desS:['Figma has a generous free tier','Even fictional brands count as portfolio','Quality over quantity for portfolio','Huge asset for agency clients']
+  },
+  3:{
+    it:['Apply for 3 freelance IT projects','Land first paid IT client','Start a technical blog or newsletter','Prep for internship applications'],
+    itS:['Upwork / Fiverr / direct LinkedIn outreach','Any amount — proof it works','Positions you as an expert publicly','BCA + portfolio = strong candidate'],
+    ag:['DM 5 potential clients every week','Land first paid agency client','Deliver excellent results + get testimonial','Hit $300–500 total earned'],
+    agS:['Warm outreach first (college network)','Focus on delivering 10× value','Reviews are your best marketing asset','Real money milestone — honor it'],
+    des:['Take on paid design work','Specialize in 1–2 niches (social / branding)','Build 20-piece design portfolio','Raise prices after first 3 clients'],
+    desS:['Even $5/design is proof of value','Niche clients pay more and refer faster','Quality work speaks louder than marketing','Clients pay for results, not effort']
+  },
+  4:{
+    it:['Raise IT freelance rates 2×','Land internship or part-time dev role','Plan 2027: specialize (AI / cloud / full-stack)','Celebrate and reflect'],
+    itS:['Your skills are worth significantly more','BCA + 6 months of builds = strong CV','This is where the fork in the road appears','You built something real — honor it'],
+    ag:['Hit $1,000 total agency earnings','Have 2–3 repeat paying clients','Plan 2027: scale with a team or stay solo','Raise all prices — you earned it'],
+    agS:['First major milestone in the journey','Recurring revenue is the real goal','Both paths can reach the same destination','Your value proposition is now proven'],
+    des:['Offer design as a service in agency','Reach 50-piece portfolio','Charge premium for brand identity work','Consider a full personal brand rebrand'],
+    desS:['Design + marketing = powerful combo','Volume of work = speed of growth','Brand identity packages command high fees','You are the proof of your own skill']
+  }
+};
+
+function showPhase(n,el){
+  document.querySelectorAll('.phase-item').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  const d=phaseData[n];
+  document.getElementById('phaseCards').innerHTML=`
+    <div class="card">
+      <div class="card-title">💻 IT — web dev + AI</div>
+      <div class="card-sub">${d.it[0].includes('Choose')?'Focus for this phase':''}</div>
+      ${d.it.map((t,i)=>`<div class="ci"><div class="cbox" onclick="tick(this)"></div><div><div class="ci-title">${t}</div><div class="ci-sub">${d.itS[i]}</div></div></div>`).join('')}
+    </div>
+    <div class="card">
+      <div class="card-title">📈 Marketing agency</div>
+      ${d.ag.map((t,i)=>`<div class="ci"><div class="cbox" onclick="tick(this)"></div><div><div class="ci-title">${t}</div><div class="ci-sub">${d.agS[i]}</div></div></div>`).join('')}
+    </div>
+    <div class="card" style="grid-column:span 2">
+      <div class="card-title">🎨 Graphic design this phase</div>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:0">
+        ${d.des.map((t,i)=>`<div class="ci"><div class="cbox" onclick="tick(this)"></div><div><div class="ci-title">${t}</div><div class="ci-sub">${d.desS[i]}</div></div></div>`).join('')}
+      </div>
+    </div>
+  `;
+}
+showPhase(1,document.querySelector('.phase-item.active'));
+</script>
+</body>
+</html>
